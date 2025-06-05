@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #83a4d4, #b6fbff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      text-align: center;
+      background-color: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      width: 300px;
+    }
+
+    input {
+      padding: 10px;
+      width: 80%;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Weather Checker</h1>
+    <input type="text" id="locationInput" placeholder="Enter location (e.g., London)" />
+    <button onclick="getWeather()">Get Weather</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function getWeather() {
+      const location = document.getElementById("locationInput").value.trim();
+      const resultDiv = document.getElementById("result");
+
+      if (!location) {
+        resultDiv.textContent = "Please enter a location.";
+        return;
+      }
+
+      const apiKey = "f96a59edbfdf4390a0855009250506";
+      const url = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}&aqi=yes`;
+
+      fetch(url)
+        .then(response => {
+          if (!response.ok) throw new Error("Location not found.");
+          return response.json();
+        })
+        .then(data => {
+          const tempC = data.current.temp_c;
+          const condition = data.current.condition.text;
+          resultDiv.innerHTML = `
+            <strong>${data.location.name}, ${data.location.country}</strong><br/>
+            Temperature: ${tempC}°C<br/>
+            Condition: ${condition}
+          `;
+        })
+        .catch(error => {
+          resultDiv.textContent = "Error: " + error.message;
+        });
+    }
+  </script>
+</body>
+</html>
